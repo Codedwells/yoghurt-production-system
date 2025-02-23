@@ -1,1 +1,1 @@
-cd ./client && pnpm run lint-staged
+cd ./client && pnpm exec lint-staged
