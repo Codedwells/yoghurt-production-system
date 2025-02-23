@@ -1,27 +1,9 @@
-# Nextjs-Starter
-
-This is a starter template for [Learn Next.js](https://nextjs.org/learn).
-
-## What's Inside?
-
-This templates includes the following:
-
-- [NextJs 15](https://nextjs.org/)
-- [React 19](https://reactjs.org/)
-- [TypeScript 5](https://www.typescriptlang.org/)
-- [Tailwind CSS](https://tailwindcss.com/)
-- [Lucide React Icons](lucide.dev/icons/)
-- [ESLint](https://eslint.org/)
-- [Prettier](https://prettier.io/)
-- [ShadCn](https://ui.shadcn.com/)
-- [Zustand](https://zustand.surge.sh/)
-
 ## Getting Started
 
 Clone the repository and run the development server:
 
 ```bash
-git clone git@github.com:zenetralabs/nextjs-template.git
+git clone git@github.com:Codedwells/yoghurt-production-system.git
 
 cd nextjs-template
 
