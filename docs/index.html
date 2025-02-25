@@ -1,0 +1,150 @@
+<!doctype html>
+<html>
+  <head>
+    <script
+      type="module"
+      src="https://md-block.verou.me/md-block.js"
+      defer
+    ></script>
+    <script src="./script.js" defer></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Funnel+Display:wght@300..800&display=swap"
+      rel="stylesheet"
+    />
+    <title>Youghurt Production</title>
+  </head>
+  <style>
+    .docs {
+      width: 50%;
+      margin: 0 auto;
+    }
+
+    @media (max-width: 768px) {
+      .docs {
+        width: 90%;
+      }
+    }
+
+  </style>
+
+  <body>
+    <section class="docs">
+      <md-block>
+
+          # <u> AI-Powered Yoghurt Production Management System</u>
+
+## Abstract
+This paper presents the design and development of an AI-powered yoghurt production management system aimed at optimizing production processes and reducing waste. The system encompasses batch formation, milk allocation, additive tracking, packaging, sales distribution, and inventory management. By integrating frontend components, backend services, and AI-driven optimization, it streamlines operations and enhances efficiency in a yoghurt manufacturing environment.
+
+## Introduction
+Yoghurt production involves managing raw materials, recipes, packaging, and sales within tight timelines to ensure freshness and minimize waste. Traditional systems often struggle with inefficiencies due to manual processes and lack of real-time insights. The AI-Powered Yoghurt Production Management System addresses these issues by automating core functions and leveraging artificial intelligence for schedule optimization and quality control. This project outlines a phased development approach to create a scalable, technology-driven solution.
+
+## System Overview
+The system is designed to manage all aspects of yoghurt production through frontend components and backend services, supported by a robust data model. It is divided into two priority levels: P0 for core functionality and P1 for advanced optimization and monitoring.
+
+### Priority P0: Core Functionality
+#### Frontend Components
+1. **Batch Formation**
+   - Allows users to create and manage yoghurt batches with specific recipes and production parameters.
+   - *Requirements*: Batch creation/editing, recipe management, production parameter tracking.
+
+2. **Additive Tracking**
+   - Manages the addition of additives (e.g., fruit, probiotics) to batches.
+   - *Requirements*: Additive inventory management, batch additive tracking, traceability.
+
+3. **Packaging and Labeling**
+   - Configures packaging options and generates labels for finished products.
+   - *Requirements*: Packaging design/printing, label creation/management, batch packaging tracking.
+
+4. **Sales Order Management**
+   - Handles customer orders and aligns them with inventory availability.
+   - *Requirements*: Order creation/processing, customer order tracking, inventory allocation.
+
+#### Backend Services
+1. **Batch Management Service**
+   - Stores and processes batch data, ensuring recipe accuracy and production monitoring.
+   - *Requirements*: Batch data storage/retrieval, recipe validation/optimization, parameter monitoring.
+
+2. **Inventory Management Service**
+   - Tracks raw materials (e.g., milk), additives, and finished products.
+   - *Requirements*: Inventory data updates, forecasting/replenishment, batch allocation.
+
+3. **Sales Order Processing Service**
+   - Manages sales orders and ensures timely fulfillment.
+   - *Requirements*: Order validation, inventory reservation, fulfillment tracking.
+
+#### Data Model
+- *Batch*: Stores batch details (recipe, parameters).
+- *Additive*: Tracks additive types and quantities.
+- *Packaging*: Records packaging configurations.
+- *SalesOrder*: Manages order data.
+- *InventoryItem*: Monitors stock levels.
+
+### Priority P1: Optimization and Quality Control
+#### Frontend Components
+1. **Production Schedule Optimization**
+   - An AI-driven interface for creating efficient production schedules.
+   - *Requirements*: AI schedule optimization, visual plan representation, batch sequencing/resource allocation.
+
+2. **Quality Control Dashboard**
+   - Monitors production quality in real-time and flags potential issues.
+   - *Requirements*: Real-time data monitoring, quality metrics/thresholds, batch analysis/reporting.
+
+#### Backend Services
+1. **AI Optimization Service**
+   - Uses AI to analyze batch data and optimize production schedules for waste reduction.
+   - *Requirements*: AI algorithms/models, batch data analysis, optimization logic.
+
+2. **Quality Control Service**
+   - Analyzes production data to ensure quality standards are met.
+   - *Requirements*: Data collection/analysis, quality rules/thresholds, batch traceability.
+
+#### Data Model
+- *ProductionSchedule*: Stores optimized schedules.
+- *QualityControlData*: Tracks quality metrics.
+
+## Development Steps
+### Phase 1: Core Functionality (P0)
+- Develop frontend components for batch formation, additive tracking, packaging, and sales order management.
+- Implement backend services for batch management, inventory management, and sales order processing.
+- Establish the core data model and ensure seamless data flow between components.
+
+### Phase 2: Optimization and Quality Control (P1)
+- Integrate AI algorithms into the production schedule optimization component and service.
+- Develop the quality control dashboard and supporting service for real-time monitoring.
+- Expand the data model to include production schedules and quality control metrics.
+
+## AI Integration
+Artificial intelligence is a cornerstone of the system, providing:
+- **Schedule Optimization**: AI analyzes historical production data, inventory levels, and sales orders to sequence batches efficiently, reducing downtime and waste.
+- **Waste Reduction**: Predictive models identify excess inventory or expiring materials, adjusting production accordingly.
+- **Quality Assurance**: Real-time analysis detects anomalies in production data, ensuring consistent quality.
+
+## Implementation
+The system uses a modular architecture with a central database. Frontend components are accessible via a web or mobile interface, while backend services are built with scalable frameworks (e.g., Python, TensorFlow). Data is sourced from sensors (e.g., milk volume), manual inputs, and sales records. The AI models are trained on production and market data to deliver actionable insights.
+
+## Benefits
+- **Operational Efficiency**: Automates tasks and optimizes resource use.
+- **Waste Reduction**: Minimizes spoilage and overproduction.
+- **Quality Improvement**: Ensures consistent product standards.
+- **Scalability**: Adapts to growing production demands.
+
+## Challenges
+- **Technical Complexity**: Requires expertise in AI and system integration.
+- **Cost**: Initial investment in hardware (sensors) and software development.
+- **Data Quality**: Relies on accurate inputs for AI effectiveness.
+
+## Conclusion
+The AI-Powered Yoghurt Production Management System offers a comprehensive solution for modern yoghurt manufacturing. By combining core management functions with AI-driven optimization and quality control, it addresses inefficiencies and supports sustainable production. Future enhancements could include integration with suppliers or advanced quality sensors.
+
+## References
+- Example: Brown, T. (2024). *AI Applications in Manufacturing*. Tech Publishing.
+
+---
+*Project developed by Duncan Areri | Abdallah Said | Abel Misiocha | Carol Faith | Ryan Malawa for JKUAT, February 25, 2025.*
+      </md-block>
+    </section>
+  </body>
+</html>
