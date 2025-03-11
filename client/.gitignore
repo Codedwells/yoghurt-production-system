@@ -19,6 +19,10 @@
 # husky
 .husky/_/
 
+# Sqlite
+dev.db
+dev.db-journal
+
 # misc
 .DS_Store
 *.pem
