@@ -1,72 +1,47 @@
 // Description : Middleware to authenticate some routes
 
-// Change cookie-parser to your own cookie parser
-import cookieParser from 'cookie-parser';
 import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
+import { getToken } from 'next-auth/jwt';
+import { NextRequestWithAuth } from 'next-auth/middleware';
 
-// Change the type of the cookie to your own cookie type
-type CookieType = {
-	token: string;
-	role: 'admin' | 'seller' | 'buyer';
-};
+export async function middleware(req: NextRequestWithAuth) {
+	const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+	const isAuth = !!token;
+	const isAuthPage = req.nextUrl.pathname.startsWith('/login');
+	const isAdmin = token?.role === 'ADMIN';
+	const isProductionManager = token?.role === 'PRODUCTION_MANAGER';
 
-export async function middleware(request: NextRequest) {
-	const url = request.nextUrl.clone();
-	const pathname = url.pathname;
-
-	if (pathname.startsWith('/admin')) {
-		const cookie = request.cookies.get('_myadmincookie');
-
-		if (cookie) {
-			const parsedCookie = cookieParser.JSONCookie(cookie.value) as CookieType;
-
-			if (parsedCookie.role == 'admin') {
-				return NextResponse.next();
-			} else {
-				url.pathname = '/auth/login';
-				return NextResponse.redirect(url);
-			}
-		} else {
-			url.pathname = '/auth/login';
-			return NextResponse.redirect(url);
+	if (isAuthPage) {
+		if (isAuth) {
+			return NextResponse.redirect(new URL('/dashboard', req.url));
 		}
-	} else if (pathname.startsWith('/profile/s')) {
-		const cookie = request.cookies.get('_myusercookie');
-
-		if (cookie) {
-			const parsedCookie = cookieParser.JSONCookie(cookie.value) as CookieType;
-
-			if (parsedCookie.role == 'seller') {
-				return NextResponse.next();
-			} else {
-				url.pathname = '/auth/login';
-				return NextResponse.redirect(url);
-			}
-		} else {
-			url.pathname = '/auth/login';
-			return NextResponse.redirect(url);
-		}
-	} else if (pathname.startsWith('/profile/b')) {
-		const cookie = request.cookies.get('_myusercookie');
-
-		if (cookie) {
-			const parsedCookie = cookieParser.JSONCookie(cookie.value) as CookieType;
-
-			if (parsedCookie.role == 'buyer') {
-				return NextResponse.next();
-			} else {
-				url.pathname = '/auth/login';
-				return NextResponse.redirect(url);
-			}
-		} else {
-			url.pathname = '/auth/login';
-			return NextResponse.redirect(url);
-		}
+		return NextResponse.next();
 	}
+
+	if (!isAuth) {
+		return NextResponse.redirect(new URL('/login', req.url));
+	}
+
+	if (req.nextUrl.pathname.startsWith('/admin') && !isAdmin) {
+		return NextResponse.redirect(new URL('/dashboard', req.url));
+	}
+
+	if (
+		req.nextUrl.pathname.startsWith('/production') &&
+		!isProductionManager &&
+		!isAdmin
+	) {
+		return NextResponse.redirect(new URL('/dashboard', req.url));
+	}
+
+	return NextResponse.next();
 }
 
-// Change the matcher to your own routes
 export const config = {
-	matcher: ['/route1/:path*', '/route2/:path*']
+	matcher: [
+		'/dashboard/:path*',
+		'/admin/:path*',
+		'/production/:path*',
+		'/login'
+	]
 };
