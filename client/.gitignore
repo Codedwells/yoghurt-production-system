@@ -16,6 +16,9 @@
 # production
 /build
 
+# AI
+ai_context.txt
+
 # husky
 .husky/_/
 
