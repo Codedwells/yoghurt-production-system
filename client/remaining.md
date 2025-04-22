@@ -6,7 +6,7 @@ This document lists all the specific features, flows, and requirements from the 
 
 ## 1. Batch Creation and Production
 ### 1.1. Production Planner
-- [ ] **AI-powered scheduling tool integration**: The user flow requires batch scheduling to consider resource availability using an AI-powered tool. No evidence of AI scheduling logic exists.
+- [x] **AI-powered scheduling tool integration**: Batch scheduling now uses an AI-powered tool (Gemini AI integration) to suggest optimal production schedules during batch creation.
 - [ ] **Ability to create new recipes from batch creation flow**: While recipes can be created, seamless creation from the batch formation module is not confirmed.
 
 ### 1.2. Production Line Operator

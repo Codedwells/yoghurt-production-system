@@ -95,6 +95,8 @@ interface FormData {
 }
 
 export default function BatchesPage() {
+	const [selectedBatch, setSelectedBatch] = useState<Batch | null>(null);
+	const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
 	const [isLoading, setIsLoading] = useState<boolean>(true);
 	const [batches, setBatches] = useState<Batch[]>([]);
 	const [recipes, setRecipes] = useState<Recipe[]>([]);
@@ -111,6 +113,9 @@ export default function BatchesPage() {
 		notes: '',
 		additives: []
 	});
+	const [aiSchedule, setAiSchedule] = useState<any>(null);
+	const [aiLoading, setAiLoading] = useState<boolean>(false);
+	const [aiError, setAiError] = useState<string | null>(null);
 
 	useEffect(() => {
 		fetchBatches();
@@ -395,8 +400,72 @@ export default function BatchesPage() {
 									</div>
 								</div>
 								<DialogFooter>
+									<Button
+										type="button"
+										variant="secondary"
+										disabled={aiLoading}
+										onClick={async () => {
+											setAiLoading(true);
+											setAiError(null);
+											setAiSchedule(null);
+											try {
+												const payload = {
+													batchSize: parseFloat(formData.milkQuantity),
+													recipeId: formData.recipeId,
+													fermentationTime: 24, // Placeholder, replace with real value if needed
+													temperature: 42, // Placeholder, replace with real value if needed
+													additives: formData.additives,
+													preferredStartDate: formData.expiryDate // Or another field if needed
+												};
+												const res = await fetch('/api/schedule/ai', {
+													method: 'POST',
+													headers: { 'Content-Type': 'application/json' },
+													body: JSON.stringify(payload)
+												});
+												if (!res.ok) throw new Error('AI scheduling failed');
+												const data = await res.json();
+												setAiSchedule(data);
+											} catch (err: any) {
+												setAiError(err.message || 'AI scheduling failed');
+											} finally {
+												setAiLoading(false);
+											}
+										}}
+									>
+										{aiLoading ? 'Requesting AI...' : 'Suggest AI Schedule'}
+									</Button>
 									<Button type="submit">Create Batch</Button>
 								</DialogFooter>
+								{aiSchedule && (
+									<div className="my-3 rounded-md border bg-blue-50 p-3">
+										<div className="mb-1 font-semibold">
+											AI Suggested Schedule:
+										</div>
+										<div>
+											<b>Start:</b>{' '}
+											{format(
+												new Date(aiSchedule.schedule.startDate),
+												'MMM d, yyyy, h:mm a'
+											)}
+										</div>
+										<div>
+											<b>Estimated Completion:</b>{' '}
+											{format(
+												new Date(aiSchedule.schedule.estimatedCompletion),
+												'MMM d, yyyy, h:mm a'
+											)}
+										</div>
+										<div>
+											<b>Line:</b> {aiSchedule.schedule.assignedLine}
+										</div>
+										<div className="mt-1 text-xs text-gray-600">
+											{aiSchedule.aiExplanation}
+										</div>
+									</div>
+								)}
+								{aiError && (
+									<div className="mt-2 text-sm text-red-600">{aiError}</div>
+								)}
 							</form>
 						</DialogContent>
 					</Dialog>
@@ -460,7 +529,14 @@ export default function BatchesPage() {
 											</TableCell>
 											<TableCell>{batch.creator?.name || 'Unknown'}</TableCell>
 											<TableCell>
-												<Button variant="outline" size="sm">
+												<Button
+													variant="outline"
+													size="sm"
+													onClick={() => {
+														setSelectedBatch(batch);
+														setIsViewDialogOpen(true);
+													}}
+												>
 													View
 												</Button>
 											</TableCell>
@@ -472,6 +548,68 @@ export default function BatchesPage() {
 					)}
 				</CardContent>
 			</Card>
+
+			{/* Batch Details Dialog */}
+			<Dialog open={isViewDialogOpen} onOpenChange={setIsViewDialogOpen}>
+				<DialogContent className="sm:max-w-[500px]">
+					<DialogHeader>
+						<DialogTitle>Batch Details</DialogTitle>
+					</DialogHeader>
+					{selectedBatch && (
+						<div className="space-y-2">
+							<div>
+								<b>Batch Number:</b> {selectedBatch.batchNumber}
+							</div>
+							<div>
+								<b>Recipe:</b>{' '}
+								{selectedBatch.recipe?.name || selectedBatch.recipeId}
+							</div>
+							<div>
+								<b>Quantity:</b> {selectedBatch.milkQuantity}{' '}
+								{selectedBatch.milkUnit}
+							</div>
+							<div>
+								<b>Status:</b> {selectedBatch.status}
+							</div>
+							<div>
+								<b>Production Date:</b>{' '}
+								{selectedBatch.productionDate
+									? format(
+											new Date(selectedBatch.productionDate),
+											'MMM d, yyyy'
+										)
+									: 'N/A'}
+							</div>
+							<div>
+								<b>Expiry Date:</b>{' '}
+								{selectedBatch.expiryDate
+									? format(new Date(selectedBatch.expiryDate), 'MMM d, yyyy')
+									: 'N/A'}
+							</div>
+							<div>
+								<b>Notes:</b> {selectedBatch.notes || 'None'}
+							</div>
+							<div>
+								<b>Created By:</b>{' '}
+								{selectedBatch.creator?.name || selectedBatch.creatorId}
+							</div>
+							{selectedBatch.batchAdditives &&
+								selectedBatch.batchAdditives.length > 0 && (
+									<div>
+										<b>Additives:</b>
+										<ul className="ml-5 list-disc">
+											{selectedBatch.batchAdditives.map((add, idx) => (
+												<li key={add.id || idx}>
+													{add.quantity} {add.unit} (ID: {add.additiveId})
+												</li>
+											))}
+										</ul>
+									</div>
+								)}
+						</div>
+					)}
+				</DialogContent>
+			</Dialog>
 		</div>
 	);
 }
