@@ -1,0 +1,115 @@
+Here's a user flow for a yogurt production company using the system, based on the Product Requirements Document:
+
+1. Batch Creation and Production
+
+1.1. Production Planner:
+
+Logs into the system.
+
+Navigates to the "Batch Formation" module.
+
+Creates a new batch.
+
+Selects a recipe from the recipe library or creates a new one.
+
+Defines production parameters (e.g., batch size, fermentation time, temperature).
+
+Assigns additives to the batch, specifying quantities.
+
+Schedules the batch for production, considering resource availability (using the AI-powered scheduling tool).
+
+Saves the batch information.
+
+1.2. Production Line Operator:
+
+Retrieves the batch information from the system.
+
+Initiates the production process according to the defined parameters.
+
+Monitors the production process, updating batch status as needed (e.g., "in progress," "completed").
+
+Records any deviations from the planned parameters.
+
+Confirms batch completion in the system.
+
+1.3. Quality Control Personnel:
+
+Accesses the "Quality Control Dashboard."
+
+Selects the completed batch.
+
+Records quality control measurements (e.g., pH, viscosity).
+
+Compares measurements against predefined quality thresholds.
+
+Logs any quality issues or deviations.
+
+Approves or rejects the batch based on quality results.
+
+2. Inventory Management
+
+2.1. Inventory Manager:
+
+Logs into the system.
+
+Navigates to the "Inventory Management" module.
+
+Views current inventory levels for raw materials, additives, and packaging materials.
+
+Receives system alerts for low stock levels.
+
+Creates purchase orders for replenishment.
+
+Records receipt of new inventory.
+
+Tracks inventory consumption by batch.
+
+Adjusts inventory levels as needed (e.g., for spoilage).
+
+3. Sales and Order Fulfillment
+
+3.1. Sales Representative:
+
+Logs into the system.
+
+Navigates to the "Sales Order Management" module.
+
+Creates a new sales order, including customer information, order details, and requested delivery date.
+
+Checks product availability (inventory levels).
+
+Confirms the order with the customer.
+
+3.2. Order Fulfillment Staff:
+
+Retrieves the sales order from the system.
+
+Allocates inventory to fulfill the order.
+
+Packs the order for shipment.
+
+Generates shipping documents and invoices.
+
+Updates the order status in the system (e.g., "shipped," "delivered").
+
+Notifies the customer of shipment.
+
+4. Reporting and Analysis
+
+4.1. Plant Manager/Business Analyst:
+
+Logs into the system.
+
+Accesses various reports and dashboards.
+
+Reviews production reports (e.g., batch yield, efficiency).
+
+Analyzes inventory reports (e.g., stock levels, turnover).
+
+Examines sales reports (e.g., order volume, sales trends).
+
+Evaluates quality control reports (e.g., defect rates, trends).
+
+Uses the system's data to identify areas for process improvement and optimization.
+
+Monitors key performance indicators (KPIs) related to production, inventory, and sales.
