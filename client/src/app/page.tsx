@@ -12,8 +12,10 @@ import {
 	LineChart,
 	Shapes
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import Link from 'next/link';
+import { cn } from '@/lib/utils';
 
 const features = [
 	{
@@ -101,9 +103,15 @@ export default function Home() {
 								</a>
 							</li>
 							<li>
-								<Button variant="outline" size="sm" className="ml-4">
+								<Link
+									href="/login"
+									className={cn(
+										buttonVariants({ variant: 'outline', size: 'sm' }),
+										'ml-4'
+									)}
+								>
 									Log In
-								</Button>
+								</Link>
 							</li>
 						</ul>
 					</nav>
