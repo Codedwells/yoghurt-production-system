@@ -18,6 +18,7 @@ model User {
   role     Role     @default(USER)
   salesOrders SalesOrder[]
   createdBatches Batch[]
+  deviations      ProductionDeviation[] @relation("OperatorDeviations")
 }
 
 enum Role {
@@ -85,6 +86,7 @@ model Batch {
   batchAdditives  BatchAdditive[]
   packaging       PackagingBatch[]
   qualityData     QualityControlData[]
+  deviations      ProductionDeviation[] @relation("BatchDeviations")
   productionSchedule ProductionSchedule? @relation(fields: [scheduleId], references: [id])
   scheduleId      String?
 }
@@ -176,6 +178,19 @@ model QualityControlData {
   timestamp   DateTime @default(now())
   status      String   // passed, warning, failed
   notes       String?
+}
+
+model ProductionDeviation {
+  id            String   @id @default(cuid())
+  batch         Batch    @relation("BatchDeviations", fields: [batchId], references: [id])
+  batchId       String
+  operator      User     @relation("OperatorDeviations", fields: [operatorId], references: [id])
+  operatorId    String
+  parameter     String
+  expectedValue String
+  actualValue   String
+  reason        String?
+  timestamp     DateTime @default(now())
 }
 
 model Setting {

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
 	Table,
@@ -41,6 +42,7 @@ import { CalendarIcon, Plus, RefreshCw, Search } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
+import { Textarea } from '@/components/ui/textarea';
 
 // Define types for our data structures
 interface Recipe {
@@ -60,6 +62,21 @@ interface BatchAdditive {
 	quantity: number;
 	unit: string;
 	additiveId: string;
+}
+
+interface Deviation {
+	id: string;
+	parameter: string;
+	expectedValue: string;
+	actualValue: string;
+	reason: string;
+	timestamp: string;
+	operator: {
+		name: string | null;
+		email: string | null;
+	};
+	operatorId: string;
+	batchId: string;
 }
 
 interface Batch {
@@ -95,6 +112,9 @@ interface FormData {
 }
 
 export default function BatchesPage() {
+	const { data: session } = useSession();
+	const userRole = session?.user?.role;
+
 	const [selectedBatch, setSelectedBatch] = useState<Batch | null>(null);
 	const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
 	const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -116,6 +136,90 @@ export default function BatchesPage() {
 	const [aiSchedule, setAiSchedule] = useState<any>(null);
 	const [aiLoading, setAiLoading] = useState<boolean>(false);
 	const [aiError, setAiError] = useState<string | null>(null);
+
+	// Deviation state
+	const [deviations, setDeviations] = useState<Deviation[]>([]);
+	const [deviationLoading, setDeviationLoading] = useState<boolean>(false);
+	const [deviationForm, setDeviationForm] = useState({
+		parameter: '',
+		expectedValue: '',
+		actualValue: '',
+		reason: ''
+	});
+	const [deviationSubmitting, setDeviationSubmitting] =
+		useState<boolean>(false);
+
+	// Fetch deviations for selected batch
+	useEffect(() => {
+		if (selectedBatch && isViewDialogOpen) {
+			fetchDeviations(selectedBatch.id);
+		} else {
+			setDeviations([]);
+		}
+	}, [selectedBatch, isViewDialogOpen]);
+
+	async function fetchDeviations(batchId: string) {
+		setDeviationLoading(true);
+		try {
+			const res = await fetch(`/api/batches/deviations?batchId=${batchId}`);
+			if (!res.ok) {
+				const errorData = await res.json();
+				throw new Error(errorData.error || 'Failed to fetch deviations');
+			}
+			const data: Deviation[] = await res.json();
+			setDeviations(data);
+		} catch (e: any) {
+			console.error('Fetch Deviations Error:', e);
+			toast.error(e.message || 'Could not load deviations');
+			setDeviations([]);
+		} finally {
+			setDeviationLoading(false);
+		}
+	}
+
+	function handleDeviationInput(
+		e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+	) {
+		const { name, value } = e.target;
+		setDeviationForm((prev) => ({ ...prev, [name]: value }));
+	}
+
+	async function handleDeviationSubmit(e: React.FormEvent<HTMLFormElement>) {
+		e.preventDefault();
+		if (!selectedBatch) return;
+		setDeviationSubmitting(true);
+		try {
+			const payload = {
+				batchId: selectedBatch.id,
+				parameter: deviationForm.parameter,
+				expectedValue: deviationForm.expectedValue,
+				actualValue: deviationForm.actualValue,
+				reason: deviationForm.reason
+			};
+			const res = await fetch('/api/batches/deviations', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify(payload)
+			});
+			if (!res.ok) {
+				const errorData = await res.json();
+				throw new Error(errorData.error || 'Failed to log deviation');
+			}
+			toast.success('Deviation logged successfully');
+			setDeviationForm({
+				parameter: '',
+				expectedValue: '',
+				actualValue: '',
+				reason: ''
+			});
+			fetchDeviations(selectedBatch.id);
+		} catch (e: any) {
+			console.error('Submit Deviation Error:', e);
+			toast.error(e.message || 'Failed to log deviation');
+		} finally {
+			setDeviationSubmitting(false);
+		}
+	}
 
 	useEffect(() => {
 		fetchBatches();
@@ -412,10 +516,10 @@ export default function BatchesPage() {
 												const payload = {
 													batchSize: parseFloat(formData.milkQuantity),
 													recipeId: formData.recipeId,
-													fermentationTime: 24, // Placeholder, replace with real value if needed
-													temperature: 42, // Placeholder, replace with real value if needed
+													fermentationTime: 24,
+													temperature: 42,
 													additives: formData.additives,
-													preferredStartDate: formData.expiryDate // Or another field if needed
+													preferredStartDate: formData.expiryDate
 												};
 												const res = await fetch('/api/schedule/ai', {
 													method: 'POST',
@@ -551,63 +655,157 @@ export default function BatchesPage() {
 
 			{/* Batch Details Dialog */}
 			<Dialog open={isViewDialogOpen} onOpenChange={setIsViewDialogOpen}>
-				<DialogContent className="sm:max-w-[500px]">
+				<DialogContent className="sm:max-w-[600px]">
 					<DialogHeader>
-						<DialogTitle>Batch Details</DialogTitle>
+						<DialogTitle>
+							Batch Details: {selectedBatch?.batchNumber}
+						</DialogTitle>
 					</DialogHeader>
 					{selectedBatch && (
-						<div className="space-y-2">
-							<div>
-								<b>Batch Number:</b> {selectedBatch.batchNumber}
+						<div className="space-y-4">
+							<div className="space-y-1 rounded border p-3">
+								<h4 className="mb-2 font-semibold">Batch Information</h4>
+								<div>
+									<b>Recipe:</b>{' '}
+									{selectedBatch.recipe?.name || selectedBatch.recipeId}
+								</div>
+								<div>
+									<b>Quantity:</b> {selectedBatch.milkQuantity}{' '}
+									{selectedBatch.milkUnit}
+								</div>
+								<div>
+									<b>Status:</b> {selectedBatch.status}
+								</div>
+								<div>
+									<b>Production Date:</b>{' '}
+									{selectedBatch.productionDate
+										? format(
+												new Date(selectedBatch.productionDate),
+												'MMM d, yyyy'
+											)
+										: 'N/A'}
+								</div>
+								<div>
+									<b>Expiry Date:</b>{' '}
+									{selectedBatch.expiryDate
+										? format(new Date(selectedBatch.expiryDate), 'MMM d, yyyy')
+										: 'N/A'}
+								</div>
+								<div>
+									<b>Notes:</b> {selectedBatch.notes || 'None'}
+								</div>
+								<div>
+									<b>Created By:</b>{' '}
+									{selectedBatch.creator?.name || selectedBatch.creatorId}
+								</div>
 							</div>
-							<div>
-								<b>Recipe:</b>{' '}
-								{selectedBatch.recipe?.name || selectedBatch.recipeId}
-							</div>
-							<div>
-								<b>Quantity:</b> {selectedBatch.milkQuantity}{' '}
-								{selectedBatch.milkUnit}
-							</div>
-							<div>
-								<b>Status:</b> {selectedBatch.status}
-							</div>
-							<div>
-								<b>Production Date:</b>{' '}
-								{selectedBatch.productionDate
-									? format(
-											new Date(selectedBatch.productionDate),
-											'MMM d, yyyy'
-										)
-									: 'N/A'}
-							</div>
-							<div>
-								<b>Expiry Date:</b>{' '}
-								{selectedBatch.expiryDate
-									? format(new Date(selectedBatch.expiryDate), 'MMM d, yyyy')
-									: 'N/A'}
-							</div>
-							<div>
-								<b>Notes:</b> {selectedBatch.notes || 'None'}
-							</div>
-							<div>
-								<b>Created By:</b>{' '}
-								{selectedBatch.creator?.name || selectedBatch.creatorId}
-							</div>
-							{selectedBatch.batchAdditives &&
-								selectedBatch.batchAdditives.length > 0 && (
-									<div>
-										<b>Additives:</b>
-										<ul className="ml-5 list-disc">
-											{selectedBatch.batchAdditives.map((add, idx) => (
-												<li key={add.id || idx}>
-													{add.quantity} {add.unit} (ID: {add.additiveId})
-												</li>
-											))}
-										</ul>
-									</div>
+
+							<div className="space-y-3 rounded border p-3">
+								<h4 className="font-semibold">Production Deviations</h4>
+
+								<div className="max-h-48 space-y-2 overflow-y-auto pr-2">
+									{deviationLoading ? (
+										<p className="text-gray-500">Loading deviations...</p>
+									) : deviations.length === 0 ? (
+										<p className="text-sm text-gray-500">
+											No deviations logged for this batch.
+										</p>
+									) : (
+										deviations.map((dev) => (
+											<div
+												key={dev.id}
+												className="rounded border bg-white p-2 text-sm shadow-sm"
+											>
+												<div>
+													<b>Parameter:</b> {dev.parameter}
+												</div>
+												<div className="flex justify-between">
+													<span>
+														<b>Expected:</b> {dev.expectedValue}
+													</span>
+													<span>
+														<b>Actual:</b> {dev.actualValue}
+													</span>
+												</div>
+												{dev.reason && (
+													<div>
+														<b>Reason:</b> {dev.reason}
+													</div>
+												)}
+												<div className="mt-1 text-xs text-gray-500">
+													Logged by{' '}
+													{dev.operator?.name ||
+														dev.operator?.email ||
+														'Unknown'}{' '}
+													on {new Date(dev.timestamp).toLocaleString()}
+												</div>
+											</div>
+										))
+									)}
+								</div>
+
+								{(userRole === 'OPERATOR' || userRole === 'ADMIN') && (
+									<form
+										className="space-y-3 border-t pt-3"
+										onSubmit={handleDeviationSubmit}
+									>
+										<h5 className="font-medium">Log New Deviation</h5>
+										<div className="grid grid-cols-3 gap-2">
+											<Input
+												name="parameter"
+												value={deviationForm.parameter}
+												onChange={handleDeviationInput}
+												placeholder="Parameter"
+												aria-label="Parameter"
+												required
+											/>
+											<Input
+												name="expectedValue"
+												value={deviationForm.expectedValue}
+												onChange={handleDeviationInput}
+												placeholder="Expected Value"
+												aria-label="Expected Value"
+												required
+											/>
+											<Input
+												name="actualValue"
+												value={deviationForm.actualValue}
+												onChange={handleDeviationInput}
+												placeholder="Actual Value"
+												aria-label="Actual Value"
+												required
+											/>
+										</div>
+										<Textarea
+											name="reason"
+											value={deviationForm.reason}
+											onChange={handleDeviationInput}
+											placeholder="Reason for deviation"
+											aria-label="Reason for deviation"
+											className="w-full"
+											rows={2}
+											required
+										/>
+										<Button
+											type="submit"
+											size="sm"
+											disabled={deviationSubmitting}
+										>
+											{deviationSubmitting ? 'Logging...' : 'Log Deviation'}
+										</Button>
+									</form>
 								)}
+							</div>
 						</div>
 					)}
+					<DialogFooter className="mt-4">
+						<Button
+							variant="outline"
+							onClick={() => setIsViewDialogOpen(false)}
+						>
+							Close
+						</Button>
+					</DialogFooter>
 				</DialogContent>
 			</Dialog>
 		</div>

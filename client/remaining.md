@@ -7,10 +7,9 @@ This document lists all the specific features, flows, and requirements from the 
 ## 1. Batch Creation and Production
 ### 1.1. Production Planner
 - [x] **AI-powered scheduling tool integration**: Batch scheduling now uses an AI-powered tool (Gemini AI integration) to suggest optimal production schedules during batch creation.
-- [ ] **Ability to create new recipes from batch creation flow**: While recipes can be created, seamless creation from the batch formation module is not confirmed.
 
 ### 1.2. Production Line Operator
-- [ ] **Interface to record deviations from planned parameters**: There is no explicit UI or backend for operators to log deviations during production.
+- [x] **Interface to record deviations from planned parameters**: Operators/Admins can log deviations (parameter, expected/actual values, reason) via the batch details view.
 
 ### 1.3. Quality Control Personnel
 - [ ] **Quality Control Dashboard**: No dedicated dashboard for quality control personnel to manage and review batches.
