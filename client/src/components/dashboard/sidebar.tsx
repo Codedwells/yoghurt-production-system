@@ -60,18 +60,6 @@ export default function DashboardSidebar({ role }: SidebarProps) {
 			roles: ['PRODUCTION_MANAGER', 'ADMIN']
 		},
 		{
-			title: 'Sales',
-			href: '/admin/sales',
-			icon: <ShoppingCart className="h-5 w-5" />,
-			roles: ['USER', 'PRODUCTION_MANAGER', 'ADMIN']
-		},
-		{
-			title: 'Analytics',
-			href: '/admin/analytics',
-			icon: <LineChart className="h-5 w-5" />,
-			roles: ['PRODUCTION_MANAGER', 'ADMIN']
-		},
-		{
 			title: 'User Management',
 			href: '/admin/users',
 			icon: <Users className="h-5 w-5" />,

@@ -17,7 +17,7 @@ export async function PUT(
 			return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
 		}
 
-		const { id } = params;
+		const id = params.id;
 		const { email, name, password, role } = await request.json();
 
 		// Check if user exists
@@ -86,7 +86,7 @@ export async function DELETE(
 			return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
 		}
 
-		const { id } = params;
+		const id = params.id;
 
 		// Prevent admin from deleting themselves
 		if (session.user.id === id) {

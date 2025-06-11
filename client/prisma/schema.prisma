@@ -11,12 +11,12 @@ datasource db {
 }
 
 model User {
-  id       String   @id @default(cuid())
-  email    String   @unique
-  name     String?
-  password String
-  role     Role     @default(USER)
-  salesOrders SalesOrder[]
+  id             String       @id @default(cuid())
+  email          String       @unique
+  name           String?
+  password       String
+  role           Role         @default(USER)
+  salesOrders    SalesOrder[]
   createdBatches Batch[]
 }
 
@@ -29,153 +29,153 @@ enum Role {
 // P0: Core Functionality Models
 
 model Recipe {
-  id          String   @id @default(cuid())
-  name        String
-  description String?
-  instructions String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  batches     Batch[]
+  id              String           @id @default(cuid())
+  name            String
+  description     String?
+  instructions    String
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  batches         Batch[]
   recipeAdditives RecipeAdditive[]
 }
 
 model RecipeAdditive {
-  id          String   @id @default(cuid())
-  quantity    Float
-  unit        String
-  recipe      Recipe   @relation(fields: [recipeId], references: [id])
-  recipeId    String
-  additive    Additive @relation(fields: [additiveId], references: [id])
-  additiveId  String
+  id         String   @id @default(cuid())
+  quantity   Float
+  unit       String
+  recipe     Recipe   @relation(fields: [recipeId], references: [id])
+  recipeId   String
+  additive   Additive @relation(fields: [additiveId], references: [id])
+  additiveId String
 }
 
 model Additive {
-  id          String   @id @default(cuid())
-  name        String
-  description String?
-  type        String   // e.g., fruit, probiotic, flavor
-  inventoryItem InventoryItem?
+  id              String           @id @default(cuid())
+  name            String
+  description     String?
+  type            String // e.g., fruit, probiotic, flavor
+  inventoryItem   InventoryItem?
   recipeAdditives RecipeAdditive[]
-  batchAdditives BatchAdditive[]
+  batchAdditives  BatchAdditive[]
 }
 
 model BatchAdditive {
-  id          String   @id @default(cuid())
-  quantity    Float
-  unit        String
-  batch       Batch    @relation(fields: [batchId], references: [id])
-  batchId     String
-  additive    Additive @relation(fields: [additiveId], references: [id])
-  additiveId  String
+  id         String   @id @default(cuid())
+  quantity   Float
+  unit       String
+  batch      Batch    @relation(fields: [batchId], references: [id])
+  batchId    String
+  additive   Additive @relation(fields: [additiveId], references: [id])
+  additiveId String
 }
 
 model Batch {
-  id              String   @id @default(cuid())
-  batchNumber     String   @unique
-  recipe          Recipe   @relation(fields: [recipeId], references: [id])
-  recipeId        String
-  productionDate  DateTime @default(now())
-  expiryDate      DateTime
-  status          String   // e.g., planned, in-production, completed, quality-check
-  milkQuantity    Float
-  milkUnit        String
-  notes           String?
-  creator         User     @relation(fields: [creatorId], references: [id])
-  creatorId       String
-  batchAdditives  BatchAdditive[]
-  packaging       PackagingBatch[]
-  qualityData     QualityControlData[]
-  productionSchedule ProductionSchedule? @relation(fields: [scheduleId], references: [id])
-  scheduleId      String?
+  id                 String               @id @default(cuid())
+  batchNumber        String               @unique
+  recipe             Recipe               @relation(fields: [recipeId], references: [id])
+  recipeId           String
+  productionDate     DateTime             @default(now())
+  expiryDate         DateTime
+  status             String // e.g., planned, in-production, completed, quality-check
+  milkQuantity       Float
+  milkUnit           String
+  notes              String?
+  creator            User                 @relation(fields: [creatorId], references: [id])
+  creatorId          String
+  batchAdditives     BatchAdditive[]
+  packaging          PackagingBatch[]
+  qualityData        QualityControlData[]
+  productionSchedule ProductionSchedule?  @relation(fields: [scheduleId], references: [id])
+  scheduleId         String?
 }
 
 model InventoryItem {
-  id          String   @id @default(cuid())
-  name        String
-  type        String   // raw-material, additive, finished-product
-  quantity    Float
-  unit        String
-  location    String?
-  supplier    String?
+  id           String     @id @default(cuid())
+  name         String
+  type         String // raw-material, additive, finished-product
+  quantity     Float
+  unit         String
+  location     String?
+  supplier     String?
   reorderLevel Float?
-  expiryDate  DateTime?
-  additiveId  String?  @unique
-  additive    Additive? @relation(fields: [additiveId], references: [id])
-  packagingId String?  @unique
-  packaging   Packaging? @relation(fields: [packagingId], references: [id])
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  expiryDate   DateTime?
+  additiveId   String?    @unique
+  additive     Additive?  @relation(fields: [additiveId], references: [id])
+  packagingId  String?    @unique
+  packaging    Packaging? @relation(fields: [packagingId], references: [id])
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
 }
 
 model Packaging {
-  id          String   @id @default(cuid())
-  name        String
-  description String?
-  size        Float
-  unit        String
-  material    String?
+  id            String           @id @default(cuid())
+  name          String
+  description   String?
+  size          Float
+  unit          String
+  material      String?
   inventoryItem InventoryItem?
-  batches     PackagingBatch[]
+  batches       PackagingBatch[]
 }
 
 model PackagingBatch {
-  id          String   @id @default(cuid())
+  id          String           @id @default(cuid())
   quantity    Int
-  batch       Batch    @relation(fields: [batchId], references: [id])
+  batch       Batch            @relation(fields: [batchId], references: [id])
   batchId     String
-  packaging   Packaging @relation(fields: [packagingId], references: [id])
+  packaging   Packaging        @relation(fields: [packagingId], references: [id])
   packagingId String
   salesOrders SalesOrderItem[]
 }
 
 model SalesOrder {
-  id           String   @id @default(cuid())
-  orderNumber  String   @unique
-  customerName String
+  id            String           @id @default(cuid())
+  orderNumber   String           @unique
+  customerName  String
   customerEmail String?
   customerPhone String?
-  orderDate    DateTime @default(now())
-  deliveryDate DateTime
-  status       String   // new, processing, shipped, delivered
-  user         User     @relation(fields: [userId], references: [id])
-  userId       String
-  items        SalesOrderItem[]
+  orderDate     DateTime         @default(now())
+  deliveryDate  DateTime
+  status        String // new, processing, shipped, delivered
+  user          User             @relation(fields: [userId], references: [id])
+  userId        String
+  items         SalesOrderItem[]
 }
 
 model SalesOrderItem {
-  id           String   @id @default(cuid())
-  quantity     Int
-  salesOrder   SalesOrder @relation(fields: [salesOrderId], references: [id])
-  salesOrderId String
-  packageBatch PackagingBatch @relation(fields: [packageBatchId], references: [id])
+  id             String         @id @default(cuid())
+  quantity       Int
+  salesOrder     SalesOrder     @relation(fields: [salesOrderId], references: [id])
+  salesOrderId   String
+  packageBatch   PackagingBatch @relation(fields: [packageBatchId], references: [id])
   packageBatchId String
 }
 
 // P1: Optimization and Quality Control Models
 
 model ProductionSchedule {
-  id          String   @id @default(cuid())
-  name        String
-  startDate   DateTime
-  endDate     DateTime
-  status      String   // planned, in-progress, completed
-  optimized   Boolean  @default(false)
-  notes       String?
-  batches     Batch[]
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id        String   @id @default(cuid())
+  name      String
+  startDate DateTime
+  endDate   DateTime
+  status    String // planned, in-progress, completed
+  optimized Boolean  @default(false)
+  notes     String?
+  batches   Batch[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model QualityControlData {
-  id          String   @id @default(cuid())
-  batch       Batch    @relation(fields: [batchId], references: [id])
-  batchId     String
-  parameter   String   // pH, temperature, viscosity, etc.
-  value       Float
-  unit        String
-  timestamp   DateTime @default(now())
-  status      String   // passed, warning, failed
-  notes       String?
+  id        String   @id @default(cuid())
+  batch     Batch    @relation(fields: [batchId], references: [id])
+  batchId   String
+  parameter String // pH, temperature, viscosity, etc.
+  value     Float
+  unit      String
+  timestamp DateTime @default(now())
+  status    String // passed, warning, failed
+  notes     String?
 }
 
 model Setting {
