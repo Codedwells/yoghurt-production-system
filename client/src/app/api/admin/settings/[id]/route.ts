@@ -2,13 +2,11 @@ import { authOptions } from '@/lib/auth';
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { PrismaClient } from '@prisma/client';
+import { NextRequest } from 'next/server';
 
 const prisma = new PrismaClient();
 
-export async function PATCH(
-	request: Request,
-	{ params }: { params: { id: string } }
-) {
+export async function PATCH(request: NextRequest) {
 	try {
 		const session = await getServerSession(authOptions);
 
@@ -16,6 +14,7 @@ export async function PATCH(
 			return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 		}
 
+		const id = request.url.split('/').pop();
 		const { value, description } = await request.json();
 
 		if (!value) {
@@ -23,7 +22,7 @@ export async function PATCH(
 		}
 
 		const setting = await prisma.setting.update({
-			where: { id: params.id },
+			where: { id },
 			data: {
 				value,
 				description,
@@ -43,10 +42,7 @@ export async function PATCH(
 	}
 }
 
-export async function DELETE(
-	request: Request,
-	{ params }: { params: { id: string } }
-) {
+export async function DELETE(request: Request) {
 	try {
 		const session = await getServerSession(authOptions);
 
@@ -54,8 +50,9 @@ export async function DELETE(
 			return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 		}
 
+		const id = request.url.split('/').pop();
 		await prisma.setting.delete({
-			where: { id: params.id }
+			where: { id }
 		});
 
 		return NextResponse.json({ success: true });

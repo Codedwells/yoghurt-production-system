@@ -5,10 +5,7 @@ import { authOptions } from '@/lib/auth';
 
 const prisma = new PrismaClient();
 
-export async function GET(
-	request: NextRequest,
-	{ params }: { params: { id: string } }
-) {
+export async function GET(request: NextRequest) {
 	try {
 		const session = await getServerSession(authOptions);
 
@@ -16,7 +13,7 @@ export async function GET(
 			return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
 		}
 
-		const id = params.id;
+		const id = request.nextUrl.pathname.split('/').pop();
 
 		const recipe = await prisma.recipe.findUnique({
 			where: { id },
@@ -58,10 +55,7 @@ export async function GET(
 	}
 }
 
-export async function PUT(
-	request: NextRequest,
-	{ params }: { params: { id: string } }
-) {
+export async function PUT(request: NextRequest) {
 	try {
 		const session = await getServerSession(authOptions);
 
@@ -69,7 +63,15 @@ export async function PUT(
 			return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
 		}
 
-		const id = params.id;
+		const id = request.url.split('/').pop();
+
+		if (!id) {
+			return NextResponse.json(
+				{ error: 'Recipe ID is required' },
+				{ status: 400 }
+			);
+		}
+
 		const { name, description, instructions, additives } = await request.json();
 
 		// Check if recipe exists
@@ -128,10 +130,7 @@ export async function PUT(
 	}
 }
 
-export async function DELETE(
-	request: NextRequest,
-	{ params }: { params: { id: string } }
-) {
+export async function DELETE(request: NextRequest) {
 	try {
 		const session = await getServerSession(authOptions);
 
@@ -139,7 +138,7 @@ export async function DELETE(
 			return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
 		}
 
-		const id = params.id;
+		const id = request.url.split('/').pop();
 
 		// Check if recipe exists
 		const existingRecipe = await prisma.recipe.findUnique({

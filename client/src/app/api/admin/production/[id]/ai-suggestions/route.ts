@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { authOptions } from '@/lib/auth';
@@ -9,10 +9,7 @@ const apiKey =
 	process.env.GEMINI_API_KEY || process.env.GOOGLE_AI_API_KEY || '';
 const genAI = new GoogleGenerativeAI(apiKey);
 
-export async function GET(
-	request: Request,
-	{ params }: { params: { id: string } }
-) {
+export async function GET(request: NextRequest) {
 	try {
 		// Verify authorization
 		const session = await getServerSession(authOptions);
@@ -30,8 +27,8 @@ export async function GET(
 			);
 		}
 
-		// Access id directly from params to avoid NextJS warning
-		const id = params.id;
+		// Access id directly from request.nextUrl
+		const id = request.nextUrl.pathname.split('/').pop();
 		if (!id) {
 			return NextResponse.json(
 				{ error: 'Production ID is required' },

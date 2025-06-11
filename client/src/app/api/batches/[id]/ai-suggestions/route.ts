@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, NextRequest } from 'next/server';
 import { db } from '@/lib/db';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
@@ -6,10 +6,7 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 const apiKey = process.env.GEMINI_API_KEY || '';
 const genAI = new GoogleGenerativeAI(apiKey);
 
-export async function GET(
-	request: Request,
-	{ params }: { params: { id: string } }
-) {
+export async function GET(request: NextRequest) {
 	try {
 		// Check if the API key is configured
 		if (!apiKey) {
@@ -20,8 +17,7 @@ export async function GET(
 			);
 		}
 
-		// Ensure batch id is provided - Get it directly from params to avoid NextJS warning
-		const id = params.id;
+		const id = request.nextUrl.pathname.split('/').pop();
 		if (!id) {
 			return NextResponse.json(
 				{ error: 'Batch ID is required' },
@@ -29,7 +25,7 @@ export async function GET(
 			);
 		}
 
-		// Try to fetch batch by ID first, then by batchNumber if that fails
+		// Try to fetch batch by ID first, then by batch number if that fails
 		let batch = await db.batch.findUnique({
 			where: { id },
 			include: {

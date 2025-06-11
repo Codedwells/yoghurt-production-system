@@ -68,7 +68,9 @@ export default function InventoryPage() {
 		location: '',
 		supplier: '',
 		reorderLevel: 0,
-		expiryDate: null
+		expiryDate: null,
+		additive: null, // Added default value
+		packaging: null // Added default value
 	});
 
 	const [editItem, setEditItem] = useState<InventoryItem | null>(null);
@@ -207,7 +209,9 @@ export default function InventoryPage() {
 			location: '',
 			supplier: '',
 			reorderLevel: 0,
-			expiryDate: null
+			expiryDate: null,
+			additive: null, // Added default value
+			packaging: null // Added default value
 		});
 		setSelectedDate(null);
 	};
@@ -227,7 +231,8 @@ export default function InventoryPage() {
 		setNewItem({
 			...newItem,
 			type: value,
-			packagingId: undefined
+			packaging: null, // Updated to use `packaging`
+			additive: null // Updated to use `additive`
 		});
 	};
 
@@ -237,9 +242,19 @@ export default function InventoryPage() {
 		setEditItem({
 			...editItem,
 			type: value,
-			additive: null,
-			packaging: null
+			additive: null, // Updated to use `additive`
+			packaging: null // Updated to use `packaging`
 		});
+	};
+
+	const handleDateSelect = (date: Date | undefined) => {
+		setSelectedDate(date || null); // Ensures `null` is passed if `undefined`
+		setNewItem({ ...newItem, expiryDate: date || null });
+	};
+
+	const handleEditDateSelect = (date: Date | undefined) => {
+		if (!editItem) return;
+		setEditItem({ ...editItem, expiryDate: date || null }); // Ensures `null` is passed if `undefined`
 	};
 
 	return (
@@ -407,9 +422,12 @@ export default function InventoryPage() {
 							<div className="grid grid-cols-4 items-center gap-4">
 								<label className="text-right">Additive</label>
 								<Select
-									value={newItem.additiveId}
+									value={newItem.additive?.id}
 									onValueChange={(value) =>
-										setNewItem({ ...newItem, additiveId: value })
+										setNewItem({
+											...newItem,
+											additive: additives.find((a) => a.id === value) || null
+										})
 									}
 								>
 									<SelectTrigger className="col-span-3">
@@ -430,9 +448,12 @@ export default function InventoryPage() {
 							<div className="grid grid-cols-4 items-center gap-4">
 								<label className="text-right">Packaging</label>
 								<Select
-									value={newItem.packagingId}
+									value={newItem.packaging?.id}
 									onValueChange={(value) =>
-										setNewItem({ ...newItem, packagingId: value })
+										setNewItem({
+											...newItem,
+											packaging: packaging.find((p) => p.id === value) || null
+										})
 									}
 								>
 									<SelectTrigger className="col-span-3">
@@ -540,8 +561,8 @@ export default function InventoryPage() {
 											mode="single"
 											selected={selectedDate || undefined}
 											onSelect={(date) => {
-												setSelectedDate(date);
-												setNewItem({ ...newItem, expiryDate: date });
+												setSelectedDate(date || null); // Ensures `null` is passed if `undefined`
+												setNewItem({ ...newItem, expiryDate: date || null });
 											}}
 											initialFocus
 										/>
@@ -604,7 +625,57 @@ export default function InventoryPage() {
 								</Select>
 							</div>
 
-							{/* Similar to create dialog, we'd have additive/packaging selectors based on type */}
+							{editItem.type === 'additive' && (
+								<div className="grid grid-cols-4 items-center gap-4">
+									<label className="text-right">Additive</label>
+									<Select
+										value={editItem.additive?.id}
+										onValueChange={(value) =>
+											setEditItem({
+												...editItem,
+												additive: additives.find((a) => a.id === value) || null
+											})
+										}
+									>
+										<SelectTrigger className="col-span-3">
+											<SelectValue placeholder="Select additive" />
+										</SelectTrigger>
+										<SelectContent>
+											{additives.map((additive) => (
+												<SelectItem key={additive.id} value={additive.id}>
+													{additive.name}
+												</SelectItem>
+											))}
+										</SelectContent>
+									</Select>
+								</div>
+							)}
+
+							{editItem.type === 'packaging' && (
+								<div className="grid grid-cols-4 items-center gap-4">
+									<label className="text-right">Packaging</label>
+									<Select
+										value={editItem.packaging?.id}
+										onValueChange={(value) =>
+											setEditItem({
+												...editItem,
+												packaging: packaging.find((p) => p.id === value) || null
+											})
+										}
+									>
+										<SelectTrigger className="col-span-3">
+											<SelectValue placeholder="Select packaging" />
+										</SelectTrigger>
+										<SelectContent>
+											{packaging.map((pkg) => (
+												<SelectItem key={pkg.id} value={pkg.id}>
+													{pkg.name}
+												</SelectItem>
+											))}
+										</SelectContent>
+									</Select>
+								</div>
+							)}
 
 							<div className="grid grid-cols-4 items-center gap-4">
 								<label className="text-right">Quantity</label>
@@ -695,8 +766,11 @@ export default function InventoryPage() {
 												mode="single"
 												selected={selectedDate || undefined}
 												onSelect={(date) => {
-													setSelectedDate(date);
-													setEditItem({ ...editItem, expiryDate: date });
+													setSelectedDate(date || null); // Ensures `null` is passed if `undefined`
+													setEditItem({
+														...editItem,
+														expiryDate: date || null
+													});
 												}}
 												initialFocus
 											/>

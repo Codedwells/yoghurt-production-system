@@ -54,6 +54,7 @@ interface ProductionDetail {
 	id: string;
 	batchNumber: string;
 	productName: string;
+	recipeId?: string; // Add this field for recipe navigation
 	// For active productions
 	progress?: number;
 	stage?: string;
@@ -281,6 +282,28 @@ export default function ProductionDetailPage() {
 					<div>
 						<p className="text-sm font-medium">Notes</p>
 						<p className="text-muted-foreground">{production?.notes}</p>
+					</div>
+
+					<Separator />
+
+					{/* Recipe Information Section */}
+					<div>
+						<div className="mb-2 flex items-center justify-between">
+							<p className="text-sm font-medium">Recipe Information</p>
+							<Button
+								variant="link"
+								size="sm"
+								onClick={() =>
+									router.push(`/admin/recipes/${production?.recipeId}`)
+								}
+								className="h-auto p-0"
+							>
+								View Full Recipe
+							</Button>
+						</div>
+						<p className="text-muted-foreground">
+							{production?.productName || 'N/A'}
+						</p>
 					</div>
 				</CardContent>
 				{!isCompleted && (

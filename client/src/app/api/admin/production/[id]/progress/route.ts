@@ -3,10 +3,7 @@ import { getServerSession } from 'next-auth';
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 
-export async function PATCH(
-	request: NextRequest,
-	{ params }: { params: { id: string } }
-) {
+export async function PATCH(request: NextRequest) {
 	try {
 		const session = await getServerSession(authOptions);
 
@@ -15,7 +12,7 @@ export async function PATCH(
 		}
 
 		// Ensure id is available
-		const id = params.id;
+		const id = request.url.split('/').pop();
 		if (!id) {
 			return NextResponse.json(
 				{ error: 'Production ID is required' },

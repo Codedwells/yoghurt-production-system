@@ -6,10 +6,7 @@ import { NextRequest, NextResponse } from 'next/server';
 
 const prisma = new PrismaClient();
 
-export async function PUT(
-	request: NextRequest,
-	{ params }: { params: { id: string } }
-) {
+export async function PUT(request: NextRequest) {
 	try {
 		const session = await getServerSession(authOptions);
 
@@ -17,7 +14,7 @@ export async function PUT(
 			return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
 		}
 
-		const id = params.id;
+		const id = request.url.split('/').pop();
 		const { email, name, password, role } = await request.json();
 
 		// Check if user exists
@@ -75,10 +72,7 @@ export async function PUT(
 	}
 }
 
-export async function DELETE(
-	request: NextRequest,
-	{ params }: { params: { id: string } }
-) {
+export async function DELETE(request: NextRequest) {
 	try {
 		const session = await getServerSession(authOptions);
 
@@ -86,7 +80,7 @@ export async function DELETE(
 			return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
 		}
 
-		const id = params.id;
+		const id = request.url.split('/').pop();
 
 		// Prevent admin from deleting themselves
 		if (session.user.id === id) {

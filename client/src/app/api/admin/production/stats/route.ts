@@ -2,6 +2,7 @@ import { authOptions } from '@/lib/auth';
 import { getServerSession } from 'next-auth';
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import { NextRequest } from 'next/server';
 
 interface ProductionStats {
 	activeCount: number;
@@ -10,7 +11,7 @@ interface ProductionStats {
 	qualityRating: number;
 }
 
-export async function GET() {
+export async function GET(request: NextRequest) {
 	try {
 		const session = await getServerSession(authOptions);
 

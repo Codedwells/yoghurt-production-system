@@ -3,10 +3,7 @@ import { getServerSession } from 'next-auth';
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 
-export async function GET(
-	request: NextRequest,
-	{ params }: { params: { id: string } }
-) {
+export async function GET(request: NextRequest) {
 	try {
 		const session = await getServerSession(authOptions);
 
@@ -14,7 +11,7 @@ export async function GET(
 			return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
 		}
 
-		const id = params.id;
+		const id = request.url.split('/').pop();
 
 		// Get the batch with all relevant information
 		const batch = await db.batch.findUnique({
@@ -70,6 +67,7 @@ export async function GET(
 				id: batch.id,
 				batchNumber: batch.batchNumber,
 				productName: batch.recipe?.name || 'Unknown',
+				recipeId: batch.recipeId, // Add the recipe ID to the response
 				completionDate: new Date(batch.productionDate).toLocaleDateString(),
 				status: 'completed',
 				outputQuality: quality,
@@ -104,6 +102,7 @@ export async function GET(
 				id: batch.id,
 				batchNumber: batch.batchNumber,
 				productName: batch.recipe?.name || 'Unknown',
+				recipeId: batch.recipeId, // Add the recipe ID to the response
 				progress: progress,
 				stage: batch.status,
 				startTime: startTime.toLocaleString(),

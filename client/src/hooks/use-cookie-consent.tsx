@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import 'vanilla-cookieconsent/dist/cookieconsent.css';
-import * as CookieConsent from 'vanilla-cookieconsent';
+import CookieConsent from 'vanilla-cookieconsent';
 
 export default function MyCookieConsent() {
 	useEffect(() => {
