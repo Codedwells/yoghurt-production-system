@@ -1,10 +1,8 @@
 import bcrypt from 'bcryptjs';
 import { authOptions } from '@/lib/auth';
 import { getServerSession } from 'next-auth';
-import { PrismaClient } from '@prisma/client';
 import { NextRequest, NextResponse } from 'next/server';
-
-const prisma = new PrismaClient();
+import { db } from '@/lib/db';
 
 export async function PUT(request: NextRequest) {
 	try {
@@ -18,7 +16,7 @@ export async function PUT(request: NextRequest) {
 		const { email, name, password, role } = await request.json();
 
 		// Check if user exists
-		const existingUser = await prisma.user.findUnique({
+		const existingUser = await db.user.findUnique({
 			where: { id }
 		});
 
@@ -28,7 +26,7 @@ export async function PUT(request: NextRequest) {
 
 		// Check if email is being changed and if it's already in use
 		if (email && email !== existingUser.email) {
-			const emailCheck = await prisma.user.findUnique({
+			const emailCheck = await db.user.findUnique({
 				where: { email }
 			});
 
@@ -52,7 +50,7 @@ export async function PUT(request: NextRequest) {
 		}
 
 		// Update user
-		const updatedUser = await prisma.user.update({
+		const updatedUser = await db.user.update({
 			where: { id },
 			data: updateData
 		});
@@ -67,8 +65,6 @@ export async function PUT(request: NextRequest) {
 			{ error: 'Failed to update user' },
 			{ status: 500 }
 		);
-	} finally {
-		await prisma.$disconnect();
 	}
 }
 
@@ -91,7 +87,7 @@ export async function DELETE(request: NextRequest) {
 		}
 
 		// Check if user exists
-		const existingUser = await prisma.user.findUnique({
+		const existingUser = await db.user.findUnique({
 			where: { id }
 		});
 
@@ -100,7 +96,7 @@ export async function DELETE(request: NextRequest) {
 		}
 
 		// Delete user
-		await prisma.user.delete({
+		await db.user.delete({
 			where: { id }
 		});
 
@@ -111,7 +107,5 @@ export async function DELETE(request: NextRequest) {
 			{ error: 'Failed to delete user' },
 			{ status: 500 }
 		);
-	} finally {
-		await prisma.$disconnect();
 	}
 }

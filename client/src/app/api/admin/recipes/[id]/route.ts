@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-
-const prisma = new PrismaClient();
+import { db } from '@/lib/db';
 
 export async function GET(request: NextRequest) {
 	try {
@@ -15,7 +13,7 @@ export async function GET(request: NextRequest) {
 
 		const id = request.nextUrl.pathname.split('/').pop();
 
-		const recipe = await prisma.recipe.findUnique({
+		const recipe = await db.recipe.findUnique({
 			where: { id },
 			include: {
 				recipeAdditives: {
@@ -50,8 +48,6 @@ export async function GET(request: NextRequest) {
 			{ error: 'Failed to fetch recipe' },
 			{ status: 500 }
 		);
-	} finally {
-		await prisma.$disconnect();
 	}
 }
 
@@ -75,7 +71,7 @@ export async function PUT(request: NextRequest) {
 		const { name, description, instructions, additives } = await request.json();
 
 		// Check if recipe exists
-		const existingRecipe = await prisma.recipe.findUnique({
+		const existingRecipe = await db.recipe.findUnique({
 			where: { id }
 		});
 
@@ -84,7 +80,7 @@ export async function PUT(request: NextRequest) {
 		}
 
 		// Update the recipe and its additives in a transaction
-		const updatedRecipe = await prisma.$transaction(async (tx) => {
+		const updatedRecipe = await db.$transaction(async (tx: typeof db) => {
 			// Update recipe
 			const recipe = await tx.recipe.update({
 				where: { id },
@@ -125,8 +121,6 @@ export async function PUT(request: NextRequest) {
 			{ error: 'Failed to update recipe' },
 			{ status: 500 }
 		);
-	} finally {
-		await prisma.$disconnect();
 	}
 }
 
@@ -141,7 +135,7 @@ export async function DELETE(request: NextRequest) {
 		const id = request.url.split('/').pop();
 
 		// Check if recipe exists
-		const existingRecipe = await prisma.recipe.findUnique({
+		const existingRecipe = await db.recipe.findUnique({
 			where: { id },
 			include: {
 				batches: { take: 1 } // Check if there are any batches
@@ -163,11 +157,11 @@ export async function DELETE(request: NextRequest) {
 		}
 
 		// Delete recipe additives first, then the recipe
-		await prisma.$transaction([
-			prisma.recipeAdditive.deleteMany({
+		await db.$transaction([
+			db.recipeAdditive.deleteMany({
 				where: { recipeId: id }
 			}),
-			prisma.recipe.delete({
+			db.recipe.delete({
 				where: { id }
 			})
 		]);
@@ -179,7 +173,5 @@ export async function DELETE(request: NextRequest) {
 			{ error: 'Failed to delete recipe' },
 			{ status: 500 }
 		);
-	} finally {
-		await prisma.$disconnect();
 	}
 }

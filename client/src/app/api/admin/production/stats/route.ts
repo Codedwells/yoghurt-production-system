@@ -41,9 +41,15 @@ export async function GET(request: NextRequest) {
 
 		// Simplified calculation - in reality would be more complex
 		if (inProgressBatches.length > 0) {
-			const completionValues = inProgressBatches.map((batch) => {
-				return batch.status === 'processing' ? 75 : 50;
-			});
+			interface BatchWithStatus {
+				status: string;
+			}
+
+			const completionValues: number[] = inProgressBatches.map(
+				(batch: BatchWithStatus) => {
+					return batch.status === 'processing' ? 75 : 50;
+				}
+			);
 			avgCompletion =
 				completionValues.reduce((sum, val) => sum + val, 0) /
 				inProgressBatches.length;
@@ -71,8 +77,15 @@ export async function GET(request: NextRequest) {
 
 		if (qualityData.length > 0) {
 			// Convert to a 5-point scale
+			interface QualityControlDataItem {
+				value: number;
+			}
+
 			qualityRating =
-				qualityData.reduce((sum, item) => sum + item.value, 0) /
+				qualityData.reduce(
+					(sum: number, item: QualityControlDataItem) => sum + item.value,
+					0
+				) /
 				qualityData.length /
 				2;
 		} else {

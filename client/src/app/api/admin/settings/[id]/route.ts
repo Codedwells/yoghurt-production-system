@@ -1,10 +1,8 @@
 import { authOptions } from '@/lib/auth';
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
-import { PrismaClient } from '@prisma/client';
+import { db } from '@/lib/db';
 import { NextRequest } from 'next/server';
-
-const prisma = new PrismaClient();
 
 export async function PATCH(request: NextRequest) {
 	try {
@@ -21,7 +19,7 @@ export async function PATCH(request: NextRequest) {
 			return NextResponse.json({ error: 'Value is required' }, { status: 400 });
 		}
 
-		const setting = await prisma.setting.update({
+		const setting = await db.setting.update({
 			where: { id },
 			data: {
 				value,
@@ -37,12 +35,10 @@ export async function PATCH(request: NextRequest) {
 			{ error: 'Failed to update setting' },
 			{ status: 500 }
 		);
-	} finally {
-		await prisma.$disconnect();
 	}
 }
 
-export async function DELETE(request: Request) {
+export async function DELETE(request: NextRequest) {
 	try {
 		const session = await getServerSession(authOptions);
 
@@ -51,7 +47,7 @@ export async function DELETE(request: Request) {
 		}
 
 		const id = request.url.split('/').pop();
-		await prisma.setting.delete({
+		await db.setting.delete({
 			where: { id }
 		});
 
@@ -62,7 +58,5 @@ export async function DELETE(request: Request) {
 			{ error: 'Failed to delete setting' },
 			{ status: 500 }
 		);
-	} finally {
-		await prisma.$disconnect();
 	}
 }

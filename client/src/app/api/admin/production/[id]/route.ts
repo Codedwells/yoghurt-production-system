@@ -54,10 +54,16 @@ export async function GET(request: NextRequest) {
 
 		if (isCompleted) {
 			// Format for completed production
-			const qualityScore =
+			interface QualityData {
+				value: number;
+			}
+
+			const qualityScore: number =
 				batch.qualityData?.length > 0
-					? batch.qualityData.reduce((acc, item) => acc + item.value, 0) /
-						batch.qualityData.length
+					? batch.qualityData.reduce(
+							(acc: number, item: QualityData) => acc + item.value,
+							0
+						) / batch.qualityData.length
 					: 0;
 
 			const quality =
