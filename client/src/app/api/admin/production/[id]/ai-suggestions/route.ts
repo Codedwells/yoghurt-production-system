@@ -9,7 +9,11 @@ const apiKey =
 	process.env.GEMINI_API_KEY || process.env.GOOGLE_AI_API_KEY || '';
 const genAI = new GoogleGenerativeAI(apiKey);
 
-export async function GET(request: NextRequest) {
+export async function GET(
+	request: NextRequest,
+	{ params }: { params: Promise<{ id: string }> }
+) {
+	const id = (await params).id;
 	try {
 		// Verify authorization
 		const session = await getServerSession(authOptions);
@@ -27,8 +31,6 @@ export async function GET(request: NextRequest) {
 			);
 		}
 
-		// Access id directly from request.nextUrl
-		const id = request.nextUrl.pathname.split('/').pop();
 		if (!id) {
 			return NextResponse.json(
 				{ error: 'Production ID is required' },
@@ -80,7 +82,13 @@ export async function GET(request: NextRequest) {
 			productionDate: batch.productionDate,
 			expiryDate: batch.expiryDate,
 			status: batch.status,
-			additives: batch.batchAdditives.map((ba) => ({
+			additives: (
+				batch.batchAdditives as Array<{
+					additive: { name: string };
+					quantity: number;
+					unit: string;
+				}>
+			).map((ba) => ({
 				name: ba.additive.name,
 				quantity: ba.quantity,
 				unit: ba.unit

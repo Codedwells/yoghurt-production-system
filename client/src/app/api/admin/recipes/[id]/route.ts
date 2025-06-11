@@ -3,15 +3,17 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { db } from '@/lib/db';
 
-export async function GET(request: NextRequest) {
+export async function GET(
+	request: NextRequest,
+	{ params }: { params: Promise<{ id: string }> }
+) {
+	const id = (await params).id;
 	try {
 		const session = await getServerSession(authOptions);
 
 		if (!session || session.user.role !== 'ADMIN') {
 			return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
 		}
-
-		const id = request.nextUrl.pathname.split('/').pop();
 
 		const recipe = await db.recipe.findUnique({
 			where: { id },
@@ -51,15 +53,17 @@ export async function GET(request: NextRequest) {
 	}
 }
 
-export async function PUT(request: NextRequest) {
+export async function PUT(
+	request: NextRequest,
+	{ params }: { params: Promise<{ id: string }> }
+) {
+	const id = (await params).id;
 	try {
 		const session = await getServerSession(authOptions);
 
 		if (!session || session.user.role !== 'ADMIN') {
 			return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
 		}
-
-		const id = request.url.split('/').pop();
 
 		if (!id) {
 			return NextResponse.json(
@@ -124,15 +128,17 @@ export async function PUT(request: NextRequest) {
 	}
 }
 
-export async function DELETE(request: NextRequest) {
+export async function DELETE(
+	request: NextRequest,
+	{ params }: { params: Promise<{ id: string }> }
+) {
+	const id = (await params).id;
 	try {
 		const session = await getServerSession(authOptions);
 
 		if (!session || session.user.role !== 'ADMIN') {
 			return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
 		}
-
-		const id = request.url.split('/').pop();
 
 		// Check if recipe exists
 		const existingRecipe = await db.recipe.findUnique({

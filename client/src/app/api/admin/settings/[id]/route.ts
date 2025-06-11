@@ -4,7 +4,11 @@ import { getServerSession } from 'next-auth';
 import { db } from '@/lib/db';
 import { NextRequest } from 'next/server';
 
-export async function PATCH(request: NextRequest) {
+export async function PATCH(
+	request: NextRequest,
+	{ params }: { params: Promise<{ id: string }> }
+) {
+	const id = (await params).id;
 	try {
 		const session = await getServerSession(authOptions);
 
@@ -12,7 +16,6 @@ export async function PATCH(request: NextRequest) {
 			return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 		}
 
-		const id = request.url.split('/').pop();
 		const { value, description } = await request.json();
 
 		if (!value) {
@@ -38,7 +41,11 @@ export async function PATCH(request: NextRequest) {
 	}
 }
 
-export async function DELETE(request: NextRequest) {
+export async function DELETE(
+	request: NextRequest,
+	{ params }: { params: Promise<{ id: string }> }
+) {
+	const id = (await params).id;
 	try {
 		const session = await getServerSession(authOptions);
 
@@ -46,7 +53,6 @@ export async function DELETE(request: NextRequest) {
 			return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 		}
 
-		const id = request.url.split('/').pop();
 		await db.setting.delete({
 			where: { id }
 		});

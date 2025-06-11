@@ -3,15 +3,17 @@ import { getServerSession } from 'next-auth';
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 
-export async function GET(request: NextRequest) {
+export async function GET(
+	request: NextRequest,
+	{ params }: { params: Promise<{ id: string }> }
+) {
+	const id = (await params).id;
 	try {
 		const session = await getServerSession(authOptions);
 
 		if (!session || session.user.role !== 'ADMIN') {
 			return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
 		}
-
-		const id = request.url.split('/').pop();
 
 		// Get the batch with all relevant information
 		const batch = await db.batch.findUnique({

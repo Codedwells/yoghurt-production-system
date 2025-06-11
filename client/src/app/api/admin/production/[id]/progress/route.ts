@@ -3,7 +3,11 @@ import { getServerSession } from 'next-auth';
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 
-export async function PATCH(request: NextRequest) {
+export async function PATCH(
+	request: NextRequest,
+	{ params }: { params: Promise<{ id: string }> }
+) {
+	const id = (await params).id;
 	try {
 		const session = await getServerSession(authOptions);
 
@@ -11,8 +15,6 @@ export async function PATCH(request: NextRequest) {
 			return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
 		}
 
-		// Ensure id is available
-		const id = request.url.split('/').pop();
 		if (!id) {
 			return NextResponse.json(
 				{ error: 'Production ID is required' },

@@ -4,7 +4,11 @@ import { getServerSession } from 'next-auth';
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 
-export async function PUT(request: NextRequest) {
+export async function PUT(
+	request: NextRequest,
+	{ params }: { params: Promise<{ id: string }> }
+) {
+	const id = (await params).id;
 	try {
 		const session = await getServerSession(authOptions);
 
@@ -12,7 +16,6 @@ export async function PUT(request: NextRequest) {
 			return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
 		}
 
-		const id = request.url.split('/').pop();
 		const { email, name, password, role } = await request.json();
 
 		// Check if user exists
@@ -68,15 +71,17 @@ export async function PUT(request: NextRequest) {
 	}
 }
 
-export async function DELETE(request: NextRequest) {
+export async function DELETE(
+	request: NextRequest,
+	{ params }: { params: Promise<{ id: string }> }
+) {
+	const id = (await params).id;
 	try {
 		const session = await getServerSession(authOptions);
 
 		if (!session || session.user.role !== 'ADMIN') {
 			return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
 		}
-
-		const id = request.url.split('/').pop();
 
 		// Prevent admin from deleting themselves
 		if (session.user.id === id) {
