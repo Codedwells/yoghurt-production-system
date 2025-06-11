@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { db } from '@/lib/db';
-
 export async function GET(
 	request: NextRequest,
 	{ params }: { params: Promise<{ id: string }> }
@@ -84,7 +83,7 @@ export async function PUT(
 		}
 
 		// Update the recipe and its additives in a transaction
-		const updatedRecipe = await db.$transaction(async (tx: typeof db) => {
+		const updatedRecipe = await db.$transaction(async (tx: any) => {
 			// Update recipe
 			const recipe = await tx.recipe.update({
 				where: { id },
