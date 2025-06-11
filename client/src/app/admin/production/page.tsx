@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import {
 	Card,
 	CardContent,
@@ -52,6 +53,7 @@ interface CompletedProduction {
 }
 
 export default function ProductionPage() {
+	const router = useRouter();
 	const [isLoading, setIsLoading] = useState<boolean>(true);
 	const [productionStats, setProductionStats] = useState<ProductionStats>({
 		activeCount: 0,
@@ -260,7 +262,13 @@ export default function ProductionPage() {
 											<div className="text-muted-foreground text-sm">
 												Estimated completion: {item.estimatedCompletion}
 											</div>
-											<Button variant="outline" size="sm">
+											<Button
+												variant="outline"
+												size="sm"
+												onClick={() =>
+													router.push(`/admin/production/${item.id}`)
+												}
+											>
 												View Details
 											</Button>
 										</div>
@@ -319,7 +327,13 @@ export default function ProductionPage() {
 										</div>
 
 										<div className="flex justify-end">
-											<Button variant="outline" size="sm">
+											<Button
+												variant="outline"
+												size="sm"
+												onClick={() =>
+													router.push(`/admin/production/${item.id}`)
+												}
+											>
 												View Report
 											</Button>
 										</div>

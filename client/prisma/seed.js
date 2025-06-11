@@ -6,8 +6,6 @@ const prisma = new PrismaClient();
 async function main() {
 	// Seed users with different roles
 	const adminPassword = await bcrypt.hash('admin123', 10);
-	const managerPassword = await bcrypt.hash('manager123', 10);
-	const userPassword = await bcrypt.hash('user123', 10);
 
 	const admin = await prisma.user.upsert({
 		where: { email: 'admin@yoghurt.com' },
@@ -17,28 +15,6 @@ async function main() {
 			name: 'Admin User',
 			password: adminPassword,
 			role: 'ADMIN'
-		}
-	});
-
-	const manager = await prisma.user.upsert({
-		where: { email: 'manager@yoghurt.com' },
-		update: {},
-		create: {
-			email: 'manager@yoghurt.com',
-			name: 'Production Manager',
-			password: managerPassword,
-			role: 'PRODUCTION_MANAGER'
-		}
-	});
-
-	const user = await prisma.user.upsert({
-		where: { email: 'user@yoghurt.com' },
-		update: {},
-		create: {
-			email: 'user@yoghurt.com',
-			name: 'Regular User',
-			password: userPassword,
-			role: 'USER'
 		}
 	});
 

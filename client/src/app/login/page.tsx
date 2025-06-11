@@ -141,18 +141,7 @@ export default function LoginPage() {
 						<div className="mt-6 grid grid-cols-1 gap-3">
 							<div className="rounded-md bg-gray-50 p-3 text-sm">
 								<p>
-									<strong>Admin:</strong> admin@yoghurt.com / admin123
-								</p>
-							</div>
-							<div className="rounded-md bg-gray-50 p-3 text-sm">
-								<p>
-									<strong>Production Manager:</strong> manager@yoghurt.com /
-									manager123
-								</p>
-							</div>
-							<div className="rounded-md bg-gray-50 p-3 text-sm">
-								<p>
-									<strong>Staff:</strong> user@yoghurt.com / user123
+									<strong>Creds:</strong> admin@yoghurt.com / admin123
 								</p>
 							</div>
 						</div>

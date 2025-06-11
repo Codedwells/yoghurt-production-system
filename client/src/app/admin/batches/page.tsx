@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
 	Table,
@@ -95,6 +96,7 @@ interface FormData {
 }
 
 export default function BatchesPage() {
+	const router = useRouter();
 	const [isLoading, setIsLoading] = useState<boolean>(true);
 	const [batches, setBatches] = useState<Batch[]>([]);
 	const [recipes, setRecipes] = useState<Recipe[]>([]);
@@ -460,7 +462,13 @@ export default function BatchesPage() {
 											</TableCell>
 											<TableCell>{batch.creator?.name || 'Unknown'}</TableCell>
 											<TableCell>
-												<Button variant="outline" size="sm">
+												<Button
+													variant="outline"
+													size="sm"
+													onClick={() =>
+														router.push(`/admin/batches/${batch.id}`)
+													}
+												>
 													View
 												</Button>
 											</TableCell>

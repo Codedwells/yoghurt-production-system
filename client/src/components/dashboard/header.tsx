@@ -1,6 +1,5 @@
 'use client';
 
-import { BellIcon } from 'lucide-react';
 import { useState } from 'react';
 import { signOut } from 'next-auth/react';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
@@ -55,17 +54,6 @@ export default function DashboardHeader({ user }: HeaderProps) {
 			<div className="flex h-full items-center justify-between px-4">
 				<div className="flex items-center"></div>
 				<div className="flex items-center space-x-4">
-					<div className="relative">
-						<Button variant="ghost" size="icon">
-							<BellIcon className="h-5 w-5" />
-							{notifications > 0 && (
-								<span className="absolute top-0 right-0 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-xs text-white">
-									{notifications}
-								</span>
-							)}
-						</Button>
-					</div>
-
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
 							<Button variant="ghost" className="relative h-8 w-8 rounded-full">
