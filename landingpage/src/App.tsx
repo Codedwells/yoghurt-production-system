@@ -1,15 +1,14 @@
-import React from 'react';
-import { 
-  Beaker, 
-  BarChart3, 
-  Package, 
-  ShoppingCart, 
-  Database, 
-  Brain, 
-  LineChart, 
-  Layers, 
-  CheckCircle, 
-  ArrowRight, 
+import {
+  Beaker,
+  BarChart3,
+  Package,
+  ShoppingCart,
+  Database,
+  Brain,
+  LineChart,
+  Layers,
+  CheckCircle,
+  ArrowRight,
   ChevronDown
 } from 'lucide-react';
 
@@ -58,9 +57,9 @@ function App() {
               </div>
             </div>
             <div className="md:w-1/2">
-              <img 
-                src="https://images.unsplash.com/photo-1563636619-e9143da7973b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1740&q=80" 
-                alt="Yoghurt Production" 
+              <img
+                src="https://images.unsplash.com/photo-1563636619-e9143da7973b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1740&q=80"
+                alt="Yoghurt Production"
                 className="rounded-lg shadow-xl"
               />
             </div>
@@ -162,7 +161,7 @@ function App() {
             <div className="md:flex">
               <div className="md:w-1/2 p-8">
                 <h3 className="text-2xl font-bold text-gray-900 mb-4">Priority P0: Core Functionality</h3>
-                
+
                 <div className="mb-6">
                   <h4 className="text-lg font-semibold text-blue-600 mb-2">Frontend Components</h4>
                   <ul className="space-y-2">
@@ -184,7 +183,7 @@ function App() {
                     </li>
                   </ul>
                 </div>
-                
+
                 <div>
                   <h4 className="text-lg font-semibold text-blue-600 mb-2">Backend Services</h4>
                   <ul className="space-y-2">
@@ -203,10 +202,10 @@ function App() {
                   </ul>
                 </div>
               </div>
-              
+
               <div className="md:w-1/2 p-8 bg-blue-50">
                 <h3 className="text-2xl font-bold text-gray-900 mb-4">Priority P1: Optimization and Quality Control</h3>
-                
+
                 <div className="mb-6">
                   <h4 className="text-lg font-semibold text-blue-600 mb-2">Advanced Components</h4>
                   <ul className="space-y-2">
@@ -220,7 +219,7 @@ function App() {
                     </li>
                   </ul>
                 </div>
-                
+
                 <div>
                   <h4 className="text-lg font-semibold text-blue-600 mb-2">AI Services</h4>
                   <ul className="space-y-2">
@@ -388,7 +387,7 @@ function App() {
           <div className="md:flex md:items-center md:justify-between">
             <div className="md:w-1/2 mb-10 md:mb-0">
               <h2 className="text-3xl font-bold text-gray-900 mb-6">Implementation Approach</h2>
-              
+
               <div className="space-y-6">
                 <div>
                   <h3 className="text-xl font-semibold text-blue-600 mb-2">Phase 1: Core Functionality</h3>
@@ -396,14 +395,14 @@ function App() {
                     Develop frontend components for batch formation, additive tracking, packaging, and sales order management, along with supporting backend services.
                   </p>
                 </div>
-                
+
                 <div>
                   <h3 className="text-xl font-semibold text-blue-600 mb-2">Phase 2: Optimization and Quality Control</h3>
                   <p className="text-gray-600">
                     Integrate AI algorithms into the production schedule optimization component and develop the quality control dashboard for real-time monitoring.
                   </p>
                 </div>
-                
+
                 <div>
                   <h3 className="text-xl font-semibold text-blue-600 mb-2">Technical Architecture</h3>
                   <p className="text-gray-600">
@@ -412,11 +411,11 @@ function App() {
                 </div>
               </div>
             </div>
-            
+
             <div className="md:w-1/2">
-              <img 
-                src="https://images.unsplash.com/photo-1581092921461-7d65ca45393a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1740&q=80" 
-                alt="Implementation Process" 
+              <img
+                src="https://images.unsplash.com/photo-1581092921461-7d65ca45393a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1740&q=80"
+                alt="Implementation Process"
                 className="rounded-lg shadow-xl"
               />
             </div>
@@ -437,33 +436,33 @@ function App() {
                 <form className="space-y-4">
                   <div>
                     <label htmlFor="name" className="block text-sm font-medium text-blue-100 mb-1">Name</label>
-                    <input 
-                      type="text" 
-                      id="name" 
-                      className="w-full px-4 py-2 rounded-md text-gray-900 focus:ring-2 focus:ring-blue-300 focus:outline-none" 
+                    <input
+                      type="text"
+                      id="name"
+                      className="w-full px-4 py-2 rounded-md text-gray-900 focus:ring-2 focus:ring-blue-300 focus:outline-none"
                       placeholder="Your name"
                     />
                   </div>
                   <div>
                     <label htmlFor="email" className="block text-sm font-medium text-blue-100 mb-1">Email</label>
-                    <input 
-                      type="email" 
-                      id="email" 
-                      className="w-full px-4 py-2 rounded-md text-gray-900 focus:ring-2 focus:ring-blue-300 focus:outline-none" 
+                    <input
+                      type="email"
+                      id="email"
+                      className="w-full px-4 py-2 rounded-md text-gray-900 focus:ring-2 focus:ring-blue-300 focus:outline-none"
                       placeholder="your@email.com"
                     />
                   </div>
                   <div>
                     <label htmlFor="company" className="block text-sm font-medium text-blue-100 mb-1">Company</label>
-                    <input 
-                      type="text" 
-                      id="company" 
-                      className="w-full px-4 py-2 rounded-md text-gray-900 focus:ring-2 focus:ring-blue-300 focus:outline-none" 
+                    <input
+                      type="text"
+                      id="company"
+                      className="w-full px-4 py-2 rounded-md text-gray-900 focus:ring-2 focus:ring-blue-300 focus:outline-none"
                       placeholder="Your company"
                     />
                   </div>
-                  <button 
-                    type="submit" 
+                  <button
+                    type="submit"
                     className="w-full bg-white text-blue-600 font-medium py-2 px-4 rounded-md hover:bg-blue-50 transition-colors"
                   >
                     Request Demo
@@ -579,7 +578,7 @@ function App() {
                 Revolutionizing yoghurt production with AI-powered management systems that optimize processes and reduce waste.
               </p>
             </div>
-            
+
             <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
               <div>
                 <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider">Product</h3>
@@ -590,7 +589,7 @@ function App() {
                   <li><a href="#" className="text-gray-300 hover:text-white transition-colors">Documentation</a></li>
                 </ul>
               </div>
-              
+
               <div>
                 <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider">Company</h3>
                 <ul className="mt-4 space-y-2">
@@ -600,7 +599,7 @@ function App() {
                   <li><a href="#contact" className="text-gray-300 hover:text-white transition-colors">Contact</a></li>
                 </ul>
               </div>
-              
+
               <div>
                 <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider">Legal</h3>
                 <ul className="mt-4 space-y-2">
@@ -611,7 +610,7 @@ function App() {
               </div>
             </div>
           </div>
-          
+
           <div className="mt-12 border-t border-gray-800 pt-8">
             <p className="text-gray-400 text-center">
               &copy; 2025 YoghurtAI. All rights reserved.
